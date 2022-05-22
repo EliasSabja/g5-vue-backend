@@ -6,11 +6,11 @@ export interface IReview {
 export interface ReviewPostRequest {
   email: string;
   text: string;
-  animeId: string;
+  animeId: number;
 }
 
 export interface ReviewKey {
   email: string;
-  animeId: string;
+  animeId: number;
 }
 

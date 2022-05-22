@@ -17,7 +17,7 @@ reviewRouter.post("/", async (req: Request, res: Response) => {
 /* Obtiene las reviews dado el id de un anime */
 reviewRouter.get("/anime/:id", async (req: Request, res: Response) => {
   try {
-    const animeId = req.params.id;
+    const animeId = parseInt(req.params.id);
     const reviews = await Review.find({ 'key.animeId': animeId });
     return res.status(200).send(reviews);
   } catch (err: any) {
