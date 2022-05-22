@@ -5,7 +5,10 @@ import routes from './routes/index';
 
 dotenv.config();
 
+var cors = require('cors')
 const app: Express = express();
+app.use(cors())
+
 const port = process.env.PORT;
 
 const run = async () => {
