@@ -6,6 +6,7 @@ services:
       target: development
     volumes:
       - ./:/vueback
+      - /vueback/node_modules
     ports:
       - ${PORT}:${PORT}
     command: npm run dev

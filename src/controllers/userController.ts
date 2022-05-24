@@ -9,6 +9,7 @@ const createUser = async (request: UserPostRequest) => {
   El request sigue la estructura de UserRequest.post.
   */
   try {
+    const newUser = {...request, animes: []};
     const user = new User(request);
     await user.save();
     return user;

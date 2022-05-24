@@ -1,7 +1,7 @@
 export interface IUser {
   email: string;
   password: string;
-  animes: string[];
+  animes: number[];
   validatePassword: (pass: string) => Promise<boolean>;
 }
 

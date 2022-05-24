@@ -12,24 +12,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const dotenv_1 = __importDefault(require("dotenv"));
 const mongoose_1 = __importDefault(require("mongoose"));
-const index_1 = __importDefault(require("./routes/index"));
-dotenv_1.default.config();
-var cors = require('cors');
-const app = (0, express_1.default)();
-app.use(cors());
-const port = process.env.PORT;
-const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    const DB_URL = process.env.MONGO_URL;
-    yield mongoose_1.default.connect(`${DB_URL}`);
+const user_1 = require("../schemas/user");
+const createUser = (request) => __awaiter(void 0, void 0, void 0, function* () {
+    /*
+    Crea un usuario a partir de los datos obtenidos del body en formato json.
+    El request sigue la estructura de UserRequest.post.
+    */
+    try {
+        const newUser = Object.assign(Object.assign({}, request), { animes: [] });
+        const user = new user_1.User(request);
+        yield user.save();
+        return user;
+    }
+    catch (err) {
+        if (err.code === 11000)
+            throw new Error("El usuario ya existe.");
+        if (err == mongoose_1.default.Error.ValidationError)
+            throw new Error("Datos de usuario inválidos.");
+        throw err;
+    }
 });
-app.get('/', (req, res) => {
-    res.send("Express app con db! :D");
-});
-app.use(express_1.default.json());
-app.use("/api", index_1.default);
-run().then(result => app.listen(port, () => {
-    console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
-})).catch(err => console.log(err));
+module.exports = {
+    createUser,
+};

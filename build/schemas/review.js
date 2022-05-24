@@ -12,24 +12,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const dotenv_1 = __importDefault(require("dotenv"));
+exports.Review = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
-const index_1 = __importDefault(require("./routes/index"));
-dotenv_1.default.config();
-var cors = require('cors');
-const app = (0, express_1.default)();
-app.use(cors());
-const port = process.env.PORT;
-const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    const DB_URL = process.env.MONGO_URL;
-    yield mongoose_1.default.connect(`${DB_URL}`);
+const { isEmail } = require('validator');
+const { Schema, model } = mongoose_1.default;
+const user_1 = require("../schemas/user");
+const ReviewSchema = new Schema({
+    key: { unique: true, type: Schema.Types.Mixed, required: true },
+    text: { type: String, required: true },
 });
-app.get('/', (req, res) => {
-    res.send("Express app con db! :D");
+ReviewSchema.pre("save", function save(next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const user = yield user_1.User.findOne({ email: this.key.email });
+            if (!user)
+                throw Error("El usuario que está escribiendo la review no existe.");
+            return next();
+        }
+        catch (err) {
+            return next(err);
+        }
+    });
 });
-app.use(express_1.default.json());
-app.use("/api", index_1.default);
-run().then(result => app.listen(port, () => {
-    console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
-})).catch(err => console.log(err));
+exports.Review = model("Review", ReviewSchema);

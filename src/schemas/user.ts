@@ -14,7 +14,7 @@ const UserSchema = new Schema<IUser>({
     createIndexes: { unique: true },
     validate: [isEmail, "Mail inválido."]
   },
-  animes: [{ type: String, required: false }],
+  animes: [{ type: Number, required: true }],
   password: { type: String, required: true },
 });
 
