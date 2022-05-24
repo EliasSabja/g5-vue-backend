@@ -22,6 +22,23 @@ userRouter.delete("/", async (req: Request, res: Response) => {
   return res.status(200).send({ "message": "Los usuarios han sido eliminados" });
 });
 
+userRouter.get("/anime", auth, async (req: AuthRequest, res: Response) => {
+  try {
+    const reqUser = req.user;
+    if (!reqUser) throw Error("Usuario no encontrado");
+
+    const email = reqUser.email!;
+    if (!email) throw Error("Usuario no encontrado");
+    // Se verifica existencia del usuario
+    const user = await User.findOne({ email });
+    if (!user) throw Error("Usuario no encontrado");
+    
+    res.status(200).send({animes: user.animes});
+  } catch(err:any) {
+    res.status(400).send({ message: err.message});
+  }
+});
+
 userRouter.post("/anime", auth, async (req: AuthRequest, res: Response) => {
   try {
     const reqUser = req.user;
